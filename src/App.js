@@ -6,6 +6,43 @@ function App() {
   const [hourState, setHourState] = useState('');
   const [allowanceState, setAllowanceState] = useState('');
 
+  const getSecond = () => Math.floor(Math.random() * 6);
+
+  const download = (arrayBuffer, type) => {
+    var blob = new Blob([arrayBuffer], { type: type });
+    var url = URL.createObjectURL(blob);
+    window.open(url);
+  };
+
+  const writePDF = ({
+    text,
+    page,
+    height,
+    positionX,
+    positionY,
+    helveticaFont,
+    u,
+  }) =>
+    page.drawText(text, {
+      x: positionX,
+      y: height / 2 + positionY,
+      size: 10,
+      font: helveticaFont,
+      color: rgb(0.0, 0.0, 0.0),
+    });
+
+  const amountDay = () => {
+    const date = new Date();
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+  };
+
+  const weekday = (day) => {
+    const date = new Date();
+    return new Date(date.getFullYear(), date.getMonth(), day)
+      .toString()
+      .split(' ')[0];
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -53,12 +90,11 @@ function App() {
 
     const pdfBytes = await pdfDoc.save();
 
-    Download(pdfBytes, event.type);
+    download(pdfBytes, event.type);
   }
 
   async function ProcessPDF({ page, helveticaFont, weekend, hour, allowance }) {
     const { height } = page.getSize();
-    const date = new Date();
 
     const X = 111;
     const Y = 263;
@@ -66,31 +102,24 @@ function App() {
     let positionY = Y; //-15
     let second = [];
     let secondOld = [];
-    const amountDay = new Date(
-      date.getFullYear(),
-      date.getMonth() + 1,
-      0
-    ).getDate();
-
-    console.log(hour.length);
 
     for (let i = 0; i < hour.length; i++) {
-      for (let u = 1; u <= amountDay; u++) {
+      for (let u = 1; u <= amountDay(); u++) {
         if (!allowance.includes(u)) {
-          second[u] = Math.floor(Math.random() * 6);
+          second[u] = getSecond();
           const hourFormated = hour[i] < 10 ? `0${hour[i]}` : hour[i];
 
           if (second[u] < secondOld[u]) second[u] = secondOld[u] + second[u];
           const secondFormated = second[u] < 10 ? `0${second[u]}` : second[u];
           secondOld[u] = second[u];
 
-          if (!weekend) {
-            const weekday = new Date(date.getFullYear(), date.getMonth(), u)
-              .toString()
-              .split(' ')[0];
+          if (!hourFormated && !secondFormated) return;
 
-            if (weekday !== 'Sat' && weekday !== 'Sun')
-              modifyPDF({
+          if (!weekend) {
+            const _weekday = weekday(u);
+
+            if (_weekday !== 'Sat' && _weekday !== 'Sun')
+              writePDF({
                 text: `${hourFormated}:${secondFormated}`,
                 page,
                 height,
@@ -100,7 +129,7 @@ function App() {
                 u,
               });
           } else
-            modifyPDF({
+            writePDF({
               text: `${hourFormated}:${secondFormated}`,
               page,
               height,
@@ -110,7 +139,7 @@ function App() {
               u,
             });
         } else
-          modifyPDF({
+          writePDF({
             text: `Abono`,
             page,
             height,
@@ -125,30 +154,6 @@ function App() {
       positionX += 118;
       positionY = Y;
     }
-  }
-
-  function modifyPDF({
-    text,
-    page,
-    height,
-    positionX,
-    positionY,
-    helveticaFont,
-    u,
-  }) {
-    page.drawText(text, {
-      x: positionX,
-      y: height / 2 + positionY,
-      size: 10,
-      font: helveticaFont,
-      color: rgb(0.0, 0.0, 0.0),
-    });
-  }
-
-  function Download(arrayBuffer, type) {
-    var blob = new Blob([arrayBuffer], { type: type });
-    var url = URL.createObjectURL(blob);
-    window.open(url);
   }
 }
 
