@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
-import './App.css';
+import logo from './logo.png';
+import './App.scss';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUpload } from '@fortawesome/free-solid-svg-icons';
 
 function App() {
   const [hourState, setHourState] = useState('');
   const [allowanceState, setAllowanceState] = useState('');
+  const [fileState, setFileState] = useState('');
+  const [holidayState, setHolidayState] = useState('');
 
   const getSecond = () => Math.floor(Math.random() * 6);
 
   const download = (arrayBuffer, type) => {
     var blob = new Blob([arrayBuffer], { type: type });
     var url = URL.createObjectURL(blob);
-    window.open(url);
+    window.location.href = url;
   };
 
   const writePDF = ({
@@ -21,12 +26,11 @@ function App() {
     positionX,
     positionY,
     helveticaFont,
-    u,
   }) =>
     page.drawText(text, {
       x: positionX,
       y: height / 2 + positionY,
-      size: 10,
+      size: 9,
       font: helveticaFont,
       color: rgb(0.0, 0.0, 0.0),
     });
@@ -43,118 +47,178 @@ function App() {
       .split(' ')[0];
   };
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        Horas:{' '}
-        <input
-          type="text"
-          name="hour"
-          onChange={(e) => setHourState(e.target.value)}
-          value={hourState}
-        />
-        (8,12,13,17) Abonos:{' '}
-        <input
-          type="text"
-          name="allowance"
-          onChange={(e) => setAllowanceState(e.target.value)}
-        />
-        (1,2,3,4,5)
-        <input
-          type="file"
-          name="file"
-          onChange={(e) => onChangeHandler(e.target.files[0])}
-        />
-      </header>
-    </div>
-  );
-
-  async function onChangeHandler(event) {
-    const existingPdfBytes = await event.arrayBuffer();
-
-    const pdfDoc = await PDFDocument.load(existingPdfBytes);
-    const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
-
-    const pages = pdfDoc.getPages();
-
+  const processPDF = async ({ page, helveticaFont, weekend }) => {
     const hour = hourState.split(',');
     const allowance = allowanceState.split(',');
-
-    await ProcessPDF({
-      page: pages[0],
-      helveticaFont,
-      weekend: false,
-      hour,
-      allowance,
-    });
-
-    const pdfBytes = await pdfDoc.save();
-
-    download(pdfBytes, event.type);
-  }
-
-  async function ProcessPDF({ page, helveticaFont, weekend, hour, allowance }) {
+    const holiday = holidayState.split(',');
     const { height } = page.getSize();
-
-    const X = 111;
-    const Y = 263;
-    let positionX = X; //+118
-    let positionY = Y; //-15
+    const positionInitialX = 96;
+    const positionInitialY = 263;
+    let positionX = positionInitialX;
+    let positionY = positionInitialY;
     let second = [];
     let secondOld = [];
+    let text = '';
 
     for (let i = 0; i < hour.length; i++) {
+      if (!hour[i]) return;
+
       for (let u = 1; u <= amountDay(); u++) {
-        if (!allowance.includes(u)) {
-          second[u] = getSecond();
-          const hourFormated = hour[i] < 10 ? `0${hour[i]}` : hour[i];
+        if (holiday.includes(u.toString())) {
+          writePDF({
+            text: `        FRI`,
+            page,
+            height,
+            positionX,
+            positionY,
+            helveticaFont,
+          });
+        } else if (allowance.includes(u.toString())) {
+          writePDF({
+            text: `       ABO`,
+            page,
+            height,
+            positionX,
+            positionY,
+            helveticaFont,
+          });
+        } else {
+          if (!Number(hour[i])) {
+            if (hour[i] !== 'h') return;
+            text = ' Home Office';
+          } else {
+            second[u] = getSecond();
+            const hourFormated = hour[i] < 10 ? `0${hour[i]}` : hour[i];
 
-          if (second[u] < secondOld[u]) second[u] = secondOld[u] + second[u];
-          const secondFormated = second[u] < 10 ? `0${second[u]}` : second[u];
-          secondOld[u] = second[u];
+            if (second[u] < secondOld[u]) second[u] = secondOld[u] + second[u];
 
-          if (!hourFormated && !secondFormated) return;
+            const secondFormated = second[u] < 10 ? `0${second[u]}` : second[u];
+
+            secondOld[u] = second[u];
+
+            text = `      ${hourFormated}:${secondFormated}`;
+          }
 
           if (!weekend) {
             const _weekday = weekday(u);
 
             if (_weekday !== 'Sat' && _weekday !== 'Sun')
               writePDF({
-                text: `${hourFormated}:${secondFormated}`,
+                text,
                 page,
                 height,
                 positionX,
                 positionY,
                 helveticaFont,
-                u,
               });
           } else
             writePDF({
-              text: `${hourFormated}:${secondFormated}`,
+              text,
               page,
               height,
               positionX,
               positionY,
               helveticaFont,
-              u,
             });
-        } else
-          writePDF({
-            text: `Abono`,
-            page,
-            height,
-            positionX,
-            positionY,
-            helveticaFont,
-            u,
-          });
-
+        }
         positionY -= 15;
       }
       positionX += 118;
-      positionY = Y;
+      positionY = positionInitialY;
     }
-  }
+  };
+
+  const onChangeHandler = async (event) => {
+    if (!event) return;
+
+    const existingPdfBytes = await event.arrayBuffer();
+
+    setFileState('');
+
+    const pdfDoc = await PDFDocument.load(existingPdfBytes);
+    const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+    const pages = pdfDoc.getPages();
+
+    await processPDF({
+      page: pages[0],
+      helveticaFont,
+      weekend: false,
+    });
+
+    const pdfBytes = await pdfDoc.save();
+
+    download(pdfBytes, event.type);
+  };
+
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+
+        <div className="grid">
+          <div className="row">
+            <label>Horas* :</label>
+            <input
+              type="text"
+              name="hour"
+              onChange={(e) => setHourState(e.target.value)}
+              value={hourState}
+              required
+            />
+          </div>
+          <div className="row">
+            <label>Feridos :</label>
+            <input
+              type="text"
+              name="holiday"
+              onChange={(e) => setHolidayState(e.target.value)}
+            />
+          </div>
+          <div className="row">
+            <label>Abonos :</label>
+            <input
+              type="text"
+              name="allowance"
+              onChange={(e) => setAllowanceState(e.target.value)}
+            />
+          </div>
+          <div className="row">
+            <label />
+            <div className="upload">
+              <label
+                className={!hourState ? 'disabled' : ''}
+                for={hourState ? 'file' : ''}
+              >
+                <FontAwesomeIcon className="upload-img" icon={faUpload} />
+              </label>
+              <input
+                type="file"
+                className="file"
+                id="file"
+                onChange={(e) => onChangeHandler(e.target.files[0])}
+                accept="application/pdf"
+                hidden
+                value={fileState}
+              />
+            </div>
+          </div>
+        </div>
+        <ul className="example">
+          <li>O campo de horários é obigatório</li>
+          <li>
+            Campo Horas - Horários (8,12,13,17) | Home Office (h, h, h, h)
+          </li>
+          <li>Campo Feridos (FRI) - Dias (2,5)</li>
+          <li>Campo Abonos (ABO) - Dias (1,4)</li>
+          <li>
+            Para Importar a folha ponto (.pdf) clique em{' '}
+            <FontAwesomeIcon className="upload-img" icon={faUpload} />
+          </li>
+        </ul>
+      </header>
+    </div>
+  );
 }
 
 export default App;
