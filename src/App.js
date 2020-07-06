@@ -83,8 +83,8 @@ function App() {
             helveticaFont,
           });
         } else {
-          if (!Number(hour[i])) {
-            if (hour[i] !== 'h') return;
+          if (!Number(hour[i].trim())) {
+            if (hour[i].trim() !== 'h') return;
             text = ' Home Office';
           } else {
             second[u] = getSecond();
