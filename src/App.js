@@ -84,7 +84,7 @@ function App() {
           });
         } else {
           if (!Number(hour[i].trim())) {
-            if (hour[i].trim() !== 'h') return;
+            if (hour[i].trim().toLowerCase() !== 'h') return;
             text = ' Home Office';
           } else {
             second[u] = getSecond();
