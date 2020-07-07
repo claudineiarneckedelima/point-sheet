@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload } from '@fortawesome/free-solid-svg-icons';
 
 function App() {
+  const [monthState, setMonthState] = useState('');
   const [hourState, setHourState] = useState('');
   const [allowanceState, setAllowanceState] = useState('');
   const [fileState, setFileState] = useState('');
@@ -37,12 +38,12 @@ function App() {
 
   const amountDay = () => {
     const date = new Date();
-    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+    return new Date(date.getFullYear(), monthState, 0).getDate();
   };
 
   const weekday = (day) => {
     const date = new Date();
-    return new Date(date.getFullYear(), date.getMonth(), day)
+    return new Date(date.getFullYear(), monthState - 1, day)
       .toString()
       .split(' ')[0];
   };
@@ -158,6 +159,24 @@ function App() {
 
         <div className="grid">
           <div className="row">
+            <label>Mês* :</label>
+            <input
+              type="number"
+              name="month"
+              onChange={(e) => {
+                const month =
+                  e.target.value <= 0 || e.target.value > 12
+                    ? null
+                    : e.target.value;
+                setMonthState(month);
+              }}
+              value={monthState}
+              required
+              min={1}
+              max={12}
+            />
+          </div>
+          <div className="row">
             <label>Horas* :</label>
             <input
               type="text"
@@ -187,8 +206,8 @@ function App() {
             <label />
             <div className="upload">
               <label
-                className={!hourState ? 'disabled' : ''}
-                for={hourState ? 'file' : ''}
+                className={!monthState || !hourState ? 'disabled' : ''}
+                for={monthState && hourState ? 'file' : ''}
               >
                 <FontAwesomeIcon className="upload-img" icon={faUpload} />
               </label>
@@ -206,6 +225,7 @@ function App() {
         </div>
         <ul className="example">
           <li>O campo de horários é obigatório</li>
+          <li>Campo Mês - Mês (7)</li>
           <li>
             Campo Horas - Horários (8,12,13,17) | Home Office (h, h, h, h)
           </li>
