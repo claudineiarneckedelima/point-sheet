@@ -4,6 +4,7 @@ import './App.scss';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload } from '@fortawesome/free-solid-svg-icons';
+import Signature from './Signature';
 
 function App() {
   const [monthState, setMonthState] = useState('');
@@ -207,7 +208,7 @@ function App() {
             <div className="upload">
               <label
                 className={!monthState || !hourState ? 'disabled' : ''}
-                for={monthState && hourState ? 'file' : ''}
+                htmlFor={monthState && hourState ? 'file' : ''}
               >
                 <FontAwesomeIcon className="upload-img" icon={faUpload} />
               </label>
@@ -221,6 +222,10 @@ function App() {
                 value={fileState}
               />
             </div>
+          </div>
+          <div className="row">
+            <label />
+            <Signature />
           </div>
         </div>
         <ul className="example">
