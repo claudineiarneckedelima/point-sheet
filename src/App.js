@@ -207,7 +207,7 @@ function App() {
             <div className="upload">
               <label
                 className={!monthState || !hourState ? 'disabled' : ''}
-                for={monthState && hourState ? 'file' : ''}
+                htmlFor={monthState && hourState ? 'file' : ''}
               >
                 <FontAwesomeIcon className="upload-img" icon={faUpload} />
               </label>
