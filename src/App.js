@@ -3,7 +3,7 @@ import logo from './logo.png';
 import './App.scss';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUpload } from '@fortawesome/free-solid-svg-icons';
+import { faFileSignature, faUpload } from '@fortawesome/free-solid-svg-icons';
 import Signature from './Signature';
 
 function App() {
@@ -11,6 +11,7 @@ function App() {
   const [hourState, setHourState] = useState('');
   const [allowanceState, setAllowanceState] = useState('');
   const [fileState, setFileState] = useState('');
+  const [signatureState, setSignatureState] = useState('');
   const [holidayState, setHolidayState] = useState('');
 
   const getSecond = () => Math.floor(Math.random() * 6);
@@ -29,7 +30,7 @@ function App() {
     positionY,
     helveticaFont,
   }) =>
-    page.drawText(text, {
+    page.drawText(text + 'oi', {
       x: positionX,
       y: height / 2 + positionY,
       size: 9,
@@ -130,7 +131,7 @@ function App() {
     }
   };
 
-  const onChangeHandler = async (event) => {
+  const onChangeFileHandler = async (event) => {
     if (!event) return;
 
     const existingPdfBytes = await event.arrayBuffer();
@@ -151,6 +152,13 @@ function App() {
     const pdfBytes = await pdfDoc.save();
 
     download(pdfBytes, event.type);
+  };
+
+  const onChangeSignatureHandler = async (event) => {
+    if (!event) return;
+
+    const existingPngBytes = await event.arrayBuffer();
+    console.log(existingPngBytes);
   };
 
   return (
@@ -210,13 +218,33 @@ function App() {
                 className={!monthState || !hourState ? 'disabled' : ''}
                 htmlFor={monthState && hourState ? 'file' : ''}
               >
+                <FontAwesomeIcon
+                  className="upload-img"
+                  icon={faFileSignature}
+                />
+              </label>
+              <input
+                type="file"
+                className="file-signature"
+                id="file"
+                onChange={(e) => onChangeSignatureHandler(e.target.files[0])}
+                accept="application/png"
+                hidden
+                value={signatureState}
+              />
+
+              <label
+                className={!monthState || !hourState ? 'disabled' : ''}
+                htmlFor={monthState && hourState ? 'file' : ''}
+              >
                 <FontAwesomeIcon className="upload-img" icon={faUpload} />
               </label>
+
               <input
                 type="file"
                 className="file"
                 id="file"
-                onChange={(e) => onChangeHandler(e.target.files[0])}
+                onChange={(e) => onChangeFileHandler(e.target.files[0])}
                 accept="application/pdf"
                 hidden
                 value={fileState}

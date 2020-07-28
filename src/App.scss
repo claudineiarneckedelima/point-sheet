@@ -48,6 +48,7 @@
             cursor: pointer;
             width: 30px;
             height: 100%;
+            margin: 10px;
           }
         }
 
@@ -61,6 +62,15 @@
       font-size: 14px;
       text-align: left;
     }
+  }
+
+  .group-file {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .signature {
+    margin-left: -70px;
   }
 }
 

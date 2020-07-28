@@ -24,6 +24,10 @@ const Signature = (props) => {
     drawing = true;
   }
 
+  function onMouseUp(e) {
+    drawing = false;
+  }
+
   function getPos(canvas, mouseEvent) {
     var clientRect = canvas.getBoundingClientRect();
 
@@ -35,13 +39,15 @@ const Signature = (props) => {
 
   return (
     <canvas
-      width={window.innerWidth}
-      height={window.innerHeight}
+      className="signature"
+      width={300}
+      height={100}
       onMouseDown={() => {
         drawing = true;
       }}
       onMouseUp={onMouseDown}
       onMouseMove={onMouseMove}
+      onMouseUp={onMouseUp}
       ref={canvasRef}
       style={{ background: '#fff' }} //, width: '100%'
     ></canvas>
