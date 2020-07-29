@@ -1,65 +1,56 @@
 .App {
   text-align: center;
   background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 1vmin);
+  color: white;
 
   .App-logo {
-    height: 25vmin;
+    height: 20vmin;
     pointer-events: none;
   }
 
-  @media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-      /* animation: App-logo-spin infinite 20s linear; */
-    }
+  .upload-signature,
+  .upload-pdf {
+    cursor: pointer;
+    width: 30px;
+    height: 100%;
+    margin: 20px 5px;
   }
 
-  .App-header {
-    min-height: 100vh;
+  .ps-input {
+    border-radius: 3px;
+    padding: 5px;
+    margin: 5px;
+    border: 0;
+    width: 300px;
+  }
+
+  label {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+  }
 
-    .grid {
-      padding-top: 30px;
-      .row {
-        display: grid;
-        grid-template-columns: 80px 210px;
-        align-items: center;
-        column-gap: 10px;
-        margin-top: 10px;
+  .disabled {
+    opacity: 0.2;
+  }
+  .example {
+    margin-top: 40px;
+    font-size: 14px;
+    text-align: left;
+  }
 
-        label {
-          font-size: 15px;
-          text-align: right;
-        }
+  .signature-container {
+    display: flex;
+    background: #fff;
+    padding: 20px;
+    margin-top: 20px;
 
-        input {
-          border-radius: 3px;
-          padding: 5px;
-          border: 0;
-          width: 200px;
-        }
-
-        .upload {
-          .upload-img {
-            cursor: pointer;
-            width: 30px;
-            height: 100%;
-          }
-        }
-
-        .disabled {
-          opacity: 0.2;
-        }
-      }
-    }
-    .example {
-      margin-top: 40px;
-      font-size: 14px;
-      text-align: left;
+    .signature {
+      font-weight: bold;
     }
   }
 }
