@@ -12,6 +12,7 @@
   .App-logo {
     height: 20vmin;
     pointer-events: none;
+    margin-bottom: 50px;
   }
 
   .upload-signature,
@@ -28,11 +29,14 @@
     margin: 5px;
     border: 0;
     width: 300px;
-    margin-bottom: 20px;
   }
 
   label {
     display: flex;
+    font-size: 0.8em;
+    align-items: center;
+    width: 130px;
+    justify-content: flex-end;
   }
 
   .disabled {
@@ -52,6 +56,18 @@
 
     .signature {
       font-weight: bold;
+    }
+  }
+
+  .buttons {
+    display: flex;
+    align-tems: center;
+    align-content: center;
+    width: 100%;
+    margin-top: 30px;
+
+    label {
+      width: 0px;
     }
   }
 }

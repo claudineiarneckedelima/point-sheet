@@ -66,114 +66,125 @@ function App() {
           <img src={logo} className="App-logo" alt="logo" />
           <Grid container direction="row">
             <label>Mês* :&nbsp;</label>
-            <SelectMonth setMonthState={setMonthState} width="100%" />
-          </Grid>
-          <br />
-          <label>Horas* :&nbsp;</label>
-          <Grid
-            container
-            direction="row"
-            justify="space-around"
-            alignItems="center"
-          >
-            <SelectHour
-              setHourState={(e) => {
-                hourState[0] = e;
-                if (!e) {
-                  hourState[0] = null;
-                  hourState[1] = null;
-                }
-                setHourState([...hourState]);
-              }}
-              width="120px"
-            />
-            <SelectHour
-              setHourState={(e) => {
-                hourState[1] = e;
-                setHourState([...hourState]);
-
-                console.log(hourState);
-              }}
-              width="120px"
-            />
-            <SelectHour
-              setHourState={(e) => {
-                hourState[2] = e;
-                if (!e) {
-                  hourState[2] = null;
-                  hourState[3] = null;
-                }
-                setHourState([...hourState]);
-              }}
-              width="120px"
-            />
-            <SelectHour
-              setHourState={(e) => {
-                hourState[3] = e;
-                setHourState([...hourState]);
-              }}
-              width="120px"
-            />
+            <SelectMonth setMonthState={setMonthState} width="310px" />
           </Grid>
           <br />
           <Grid container direction="column">
-            <label>Feridos :&nbsp;</label>
-            <input
-              type="text"
-              name="holiday"
-              className="ps-input"
-              onChange={(e) => setHolidayState(e.target.value)}
-            />
-            <label>Abonos :&nbsp;</label>
-            <input
-              type="text"
-              name="allowance"
-              className="ps-input"
-              onChange={(e) => setAllowanceState(e.target.value)}
-            />
+            <Grid container>
+              <label>Hora Entrada* :&nbsp;</label>
+              <SelectHour
+                setHourState={(e) => {
+                  hourState[0] = e;
+                  if (!e) {
+                    hourState[0] = null;
+                    hourState[1] = null;
+                  }
+                  setHourState([...hourState]);
+                }}
+                width="310px"
+              />
+            </Grid>
+            <Grid container>
+              <label>Hora Saída* :&nbsp;</label>
+              <SelectHour
+                setHourState={(e) => {
+                  hourState[1] = e;
+                  setHourState([...hourState]);
 
-            <div>
-              <label
-                className={!monthState || !verifyHour() ? 'disabled' : ''}
-                htmlFor={monthState && verifyHour() ? 'upload-signature' : ''}
-              >
-                <FontAwesomeIcon
+                  console.log(hourState);
+                }}
+                width="310px"
+              />
+            </Grid>
+            <Grid container>
+              <label>Hora Entrada* :&nbsp;</label>
+              <SelectHour
+                setHourState={(e) => {
+                  hourState[2] = e;
+                  if (!e) {
+                    hourState[2] = null;
+                    hourState[3] = null;
+                  }
+                  setHourState([...hourState]);
+                }}
+                width="310px"
+              />
+            </Grid>
+            <Grid container>
+              <label>Hora Saída* :&nbsp;</label>
+              <SelectHour
+                setHourState={(e) => {
+                  hourState[3] = e;
+                  setHourState([...hourState]);
+                }}
+                width="310px"
+              />
+            </Grid>
+            <br />
+            <Grid container>
+              <label>Feridos :&nbsp;</label>
+              <input
+                type="text"
+                name="holiday"
+                className="ps-input"
+                onChange={(e) => setHolidayState(e.target.value)}
+              />
+            </Grid>
+            <Grid container>
+              <label>Abonos :&nbsp;</label>
+              <input
+                type="text"
+                name="allowance"
+                className="ps-input"
+                onChange={(e) => setAllowanceState(e.target.value)}
+              />
+            </Grid>
+            <Grid container direction="column" className="buttons">
+              <div>
+                <label
+                  className={!monthState || !verifyHour() ? 'disabled' : ''}
+                  htmlFor={monthState && verifyHour() ? 'upload-signature' : ''}
+                >
+                  <FontAwesomeIcon
+                    className="upload-signature"
+                    icon={faFileSignature}
+                  />
+                </label>
+                <input
+                  type="file"
                   className="upload-signature"
-                  icon={faFileSignature}
+                  id="upload-signature"
+                  onChange={(e) => onChangeSignatureHandler(e.target.files[0])}
+                  accept="image/png"
+                  hidden
                 />
-              </label>
-              <input
-                type="file"
-                className="upload-signature"
-                id="upload-signature"
-                onChange={(e) => onChangeSignatureHandler(e.target.files[0])}
-                accept="image/png"
-                hidden
-              />
-            </div>
-            <div>
-              <label
-                className={!monthState || !verifyHour() ? 'disabled' : ''}
-                htmlFor={monthState && verifyHour() ? 'upload-pdf' : ''}
-              >
-                <FontAwesomeIcon className="upload-pdf" icon={faUpload} />
-              </label>
-              <input
-                type="file"
-                className="upload-pdf"
-                id="upload-pdf"
-                onChange={(e) => onChangeFileHandler(e.target.files[0])}
-                accept="application/pdf"
-                hidden
-                value={fileState}
-              />
-            </div>
-            <Signature />
+              </div>
+              <div>
+                <label
+                  className={!monthState || !verifyHour() ? 'disabled' : ''}
+                  htmlFor={monthState && verifyHour() ? 'upload-pdf' : ''}
+                >
+                  <FontAwesomeIcon className="upload-pdf" icon={faUpload} />
+                </label>
+                <input
+                  type="file"
+                  className="upload-pdf"
+                  id="upload-pdf"
+                  onChange={(e) => onChangeFileHandler(e.target.files[0])}
+                  accept="application/pdf"
+                  hidden
+                  value={fileState}
+                />
+              </div>
+            </Grid>
+            <Grid container>
+              <Signature />
+            </Grid>
           </Grid>
         </Container>
       </div>
 
-      <header className="App-header">
+      <header>
         <ul className="example">
           <li>Os campos de mês e horas são obrigatórios</li>
           <li>Campo Feridos (FRI) - Dias (2,5)</li>
