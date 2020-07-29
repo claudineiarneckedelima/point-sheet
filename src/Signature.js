@@ -13,6 +13,7 @@ const Signature = (props) => {
 
     const pos = getPos(canvas, e);
     ctx.lineTo(pos.x, pos.y);
+    ctx.lineWidth = 5;
     ctx.stroke();
   }
 
@@ -38,19 +39,21 @@ const Signature = (props) => {
   }
 
   return (
-    <canvas
-      className="signature"
-      width={300}
-      height={100}
-      onMouseDown={() => {
-        drawing = true;
-      }}
-      onMouseUp={onMouseDown}
-      onMouseMove={onMouseMove}
-      onMouseUp={onMouseUp}
-      ref={canvasRef}
-      style={{ background: '#fff' }} //, width: '100%'
-    ></canvas>
+    <div className="signature-container">
+      <canvas
+        className="signature"
+        width={475}
+        height={99}
+        onMouseDown={() => {
+          drawing = true;
+        }}
+        onMouseUp={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseUp={onMouseUp}
+        ref={canvasRef}
+        style={{ background: '#fff' }} //, width: '100%'
+      ></canvas>
+    </div>
   );
 };
 
