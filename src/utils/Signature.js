@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 
-const Signature = (props) => {
+const Signature = () => {
   const canvasRef = useRef(null);
   let drawing = false;
 
@@ -47,16 +47,13 @@ const Signature = (props) => {
         onMouseDown={() => {
           drawing = true;
         }}
-        onMouseUp={onMouseDown}
         onMouseMove={onMouseMove}
         onMouseUp={onMouseUp}
         ref={canvasRef}
-        style={{ background: '#fff' }} //, width: '100%'
+        style={{ background: '#fff' }}
       ></canvas>
     </div>
   );
 };
 
 export default Signature;
-
-//https://demo.latromi.com.br/web/exemplos/assinatura-digital

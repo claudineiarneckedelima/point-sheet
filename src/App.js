@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import logo from './logo.png';
 import './App.scss';
-import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import { PDFDocument, StandardFonts } from 'pdf-lib';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileSignature, faUpload } from '@fortawesome/free-solid-svg-icons';
-import Signature from './Signature';
 import { SelectHour, SelectMonth } from './components/Select';
 import { Container, Grid } from '@material-ui/core';
+import Signature from './utils/Signature';
+import Download from './utils/Download';
+import ProcessPDF from './utils/ProcessPDF';
 
 function App() {
   const [monthState, setMonthState] = useState('');
@@ -15,137 +17,6 @@ function App() {
   const [fileState, setFileState] = useState('');
   const [signatureState, setSignatureState] = useState('');
   const [holidayState, setHolidayState] = useState('');
-
-  const getSecond = () => Math.floor(Math.random() * 6);
-
-  const download = (arrayBuffer, type) => {
-    var blob = new Blob([arrayBuffer], { type: type });
-    var url = URL.createObjectURL(blob);
-    window.location.href = url;
-  };
-
-  const writePDF = ({
-    text,
-    page,
-    height,
-    positionX,
-    positionY,
-    helveticaFont,
-    pngImage,
-  }) => {
-    page.drawText(text, {
-      x: positionX,
-      y: height / 2 + positionY,
-      size: 9,
-      font: helveticaFont,
-      color: rgb(0.0, 0.0, 0.0),
-    });
-
-    if (pngImage)
-      page.drawImage(pngImage, {
-        x: positionX + 60,
-        y: height / 2 + positionY - 3,
-        width: 50,
-        height: 12,
-      });
-  };
-
-  const amountDay = () => {
-    const date = new Date();
-    return new Date(date.getFullYear(), monthState, 0).getDate();
-  };
-
-  const weekday = (day) => {
-    const date = new Date();
-    return new Date(date.getFullYear(), monthState - 1, day)
-      .toString()
-      .split(' ')[0];
-  };
-
-  const processPDF = async ({ page, helveticaFont, weekend, pngImage }) => {
-    const hour = hourState;
-    const allowance = allowanceState.split(',');
-    const holiday = holidayState.split(',');
-    const { height } = page.getSize();
-    const positionInitialX = 96;
-    const positionInitialY = 263;
-    let positionX = positionInitialX;
-    let positionY = positionInitialY;
-    let second = [];
-    let secondOld = [];
-    let text = '';
-
-    for (let i = 0; i < hour.length; i++) {
-      if (!hour[i]) return;
-
-      for (let u = 1; u <= amountDay(); u++) {
-        if (holiday.includes(u.toString())) {
-          writePDF({
-            text: `        FRI`,
-            page,
-            height,
-            positionX,
-            positionY,
-            helveticaFont,
-            pngImage,
-          });
-        } else if (allowance.includes(u.toString())) {
-          writePDF({
-            text: `       ABO`,
-            page,
-            height,
-            positionX,
-            positionY,
-            helveticaFont,
-            pngImage,
-          });
-        } else {
-          if (!Number(hour[i].trim())) {
-            if (hour[i].trim().toLowerCase() !== 'h') return;
-            text = ' Home Office';
-          } else {
-            second[u] = getSecond();
-            const hourFormated = hour[i] < 10 ? `0${hour[i]}` : hour[i];
-
-            if (second[u] < secondOld[u]) second[u] = secondOld[u] + second[u];
-
-            const secondFormated = second[u] < 10 ? `0${second[u]}` : second[u];
-
-            secondOld[u] = second[u];
-
-            text = `      ${hourFormated}:${secondFormated}`;
-          }
-
-          if (!weekend) {
-            const _weekday = weekday(u);
-
-            if (_weekday !== 'Sat' && _weekday !== 'Sun')
-              writePDF({
-                text,
-                page,
-                height,
-                positionX,
-                positionY,
-                helveticaFont,
-                pngImage,
-              });
-          } else
-            writePDF({
-              text,
-              page,
-              height,
-              positionX,
-              positionY,
-              helveticaFont,
-              pngImage,
-            });
-        }
-        positionY -= 15;
-      }
-      positionX += 118;
-      positionY = positionInitialY;
-    }
-  };
 
   const onChangeFileHandler = async (event) => {
     if (!event) return;
@@ -163,16 +34,20 @@ function App() {
       ? await pdfDoc.embedPng(signatureState)
       : '';
 
-    await processPDF({
+    await ProcessPDF({
       page: pages[0],
       helveticaFont,
       weekend: false,
       pngImage: pngImage,
+      monthState,
+      hourState,
+      allowanceState,
+      holidayState,
     });
 
     const pdfBytes = await pdfDoc.save();
 
-    download(pdfBytes, event.type);
+    Download(pdfBytes, event.type);
   };
 
   const onChangeSignatureHandler = async (event) => {
