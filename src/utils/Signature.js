@@ -44,9 +44,7 @@ const Signature = () => {
         className="signature"
         width={475}
         height={99}
-        onMouseDown={() => {
-          drawing = true;
-        }}
+        onMouseDown={onMouseDown}
         onMouseMove={onMouseMove}
         onMouseUp={onMouseUp}
         ref={canvasRef}
