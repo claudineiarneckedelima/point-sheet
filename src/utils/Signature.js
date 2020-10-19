@@ -60,6 +60,7 @@ const Signature = () => {
         ></canvas>
       </div>
       <input
+        className="eraseSignature"
         type="button"
         onClick={() => eraseSignature()}
         value="Limpar Assinatura"
