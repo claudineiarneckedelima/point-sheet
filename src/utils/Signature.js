@@ -38,18 +38,32 @@ const Signature = () => {
     };
   }
 
+  function eraseSignature() {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+  }
+
   return (
-    <div className="signature-container">
-      <canvas
-        className="signature"
-        width={475}
-        height={99}
-        onMouseDown={onMouseDown}
-        onMouseMove={onMouseMove}
-        onMouseUp={onMouseUp}
-        ref={canvasRef}
-        style={{ background: '#fff' }}
-      ></canvas>
+    <div>
+      <div className="signature-container">
+        <canvas
+          className="signature"
+          width={475}
+          height={99}
+          onMouseDown={onMouseDown}
+          onMouseMove={onMouseMove}
+          onMouseUp={onMouseUp}
+          ref={canvasRef}
+          style={{ background: '#fff' }}
+        ></canvas>
+      </div>
+      <input
+        type="button"
+        onClick={() => eraseSignature()}
+        value="Limpar Assinatura"
+      />
     </div>
   );
 };
