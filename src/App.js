@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import logo from './logo.png';
-import './App.scss';
+import './App.css';
 import { PDFDocument, StandardFonts } from 'pdf-lib';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileSignature, faUpload } from '@fortawesome/free-solid-svg-icons';

@@ -78,7 +78,7 @@ const ProcessPDF = async ({
         }
 
         if (!weekend) {
-          const _weekday = weekday(u, monthState);
+          const _weekday = weekday(u - 1, monthState);
 
           if (_weekday !== 'Sat' && _weekday !== 'Sun')
             WritePDF({
