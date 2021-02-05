@@ -186,6 +186,7 @@ function App() {
 
       <header>
         <ul className="example">
+          <li>Não esqueça de sempre baixar as atualizações (git pull)</li>
           <li>Os campos de mês e horas são obrigatórios</li>
           <li>Campo Feridos (FRI) - Dias (2,5)</li>
           <li>Campo Abonos (ABO) - Dias (1,4)</li>
