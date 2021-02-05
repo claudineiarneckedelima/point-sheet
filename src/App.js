@@ -12,7 +12,7 @@ import ProcessPDF from './utils/ProcessPDF';
 
 function App() {
   const [monthState, setMonthState] = useState('');
-  const [hourState, setHourState] = useState([]);
+  const [hourState, setHourState] = useState(['h','h','h','h']);
   const [allowanceState, setAllowanceState] = useState('');
   const [fileState, setFileState] = useState('');
   const [signatureState, setSignatureState] = useState('');
