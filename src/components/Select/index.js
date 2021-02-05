@@ -14,7 +14,7 @@ const SelectHour = ({ setHourState, width }) => {
       style={{ width: width }}
     >
       <option key={0} value=""></option>
-      <option key={1} value="h">
+      <option key={1} value="h" selected>
         Home Office
       </option>
       {hour.map((month, i) => (

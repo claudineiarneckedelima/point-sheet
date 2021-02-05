@@ -1,7 +1,7 @@
 const Download = (arrayBuffer, type) => {
   var blob = new Blob([arrayBuffer], { type: type });
   var url = URL.createObjectURL(blob);
-  window.location.href = url;
+  window.open(url);
 };
 
 export default Download;
